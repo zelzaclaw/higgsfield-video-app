@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Higgsfield Video Generator</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-content">
+            <h1>Higgsfield Video Generator</h1>
+            <div class="header-actions">
+                <button id="addApiKeyBtn" class="btn btn-secondary">Add API Key</button>
+                <button id="settingsIcon" class="btn-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <nav class="tabs-nav">
+        <button class="tab-btn active" data-tab="image">Image Generation</button>
+        <button class="tab-btn" data-tab="video">Video Generation</button>
+    </nav>
+
+    <main class="main-content">
+        <!-- Image Tab -->
+        <section id="imageTab" class="tab-content active">
+            <div class="form-section">
+                <div class="upload-area" id="imageUploadArea">
+                    <p>Drag & drop your reference image here, or click to select</p>
+                    <input type="file" id="referenceImage" accept="image/*" style="display: none;">
+                    <button type="button" class="btn btn-outline" onclick="document.getElementById('referenceImage').click()">Select Image</button>
+                    <div class="preview-container" id="imagePreviewContainer" style="display: none;">
+                        <img id="imagePreview" src="" alt="Preview">
+                    </div>
+                </div>
+                
+                <div class="prompt-section">
+                    <label for="imagePrompt">Prompt</label>
+                    <textarea id="imagePrompt" maxlength="500" placeholder="Describe the image you want to generate..."></textarea>
+                    <div class="char-counter">
+                        <span id="imageCharCount">0</span>/500
+                    </div>
+                </div>
+                
+                <div class="advanced-options">
+                    <details>
+                        <summary>Advanced Options</summary>
+                        <div class="options-grid">
+                            <div class="option-group">
+                                <label for="aspectRatio">Aspect Ratio</label>
+                                <select id="aspectRatio">
+                                    <option value="16:9">16:9</option>
+                                    <option value="9:16">9:16</option>
+                                    <option value="1:1">1:1</option>
+                                </select>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label for="resolution">Resolution</label>
+                                <select id="resolution">
+                                    <option value="720p">720p</option>
+                                    <option value="1080p">1080p</option>
+                                    <option value="2K">2K</option>
+                                </select>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+                
+                <button id="generateImageButton" class="btn btn-primary">Generate Image</button>
+            </div>
+            
+            <div class="results-section" id="imageResultsSection" style="display: none;">
+                <h3>Generated Image</h3>
+                <div class="result-content">
+                    <img id="generatedImageResult" src="" alt="Generated Image">
+                    <div class="result-actions">
+                        <button id="downloadImageResult" class="btn btn-secondary">Download</button>
+                        <button id="useForVideoBtn" class="btn btn-primary">Use for Video</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Video Tab -->
+        <section id="videoTab" class="tab-content">
+            <div class="form-section">
+                <div class="upload-area" id="videoUploadArea">
+                    <p>Drag & drop your reference image here, or click to select</p>
+                    <input type="file" id="videoReferenceImage" accept="image/*" style="display: none;">
+                    <button type="button" class="btn btn-outline" onclick="document.getElementById('videoReferenceImage').click()">Select Image</button>
+                    <div id="usingImageFromImageTab" style="display: none;">
+                        <p>Using image from Image tab</p>
+                        <button id="switchToUploadBtn" class="btn btn-sm">Switch to upload</button>
+                    </div>
+                    <div class="preview-container" id="videoPreviewContainer" style="display: none;">
+                        <img id="videoPreview" src="" alt="Preview">
+                    </div>
+                </div>
+                
+                <div class="prompt-section">
+                    <label for="videoPrompt">Motion/Camera Prompt</label>
+                    <textarea id="videoPrompt" placeholder="Describe the motion or camera movement for the video..."></textarea>
+                </div>
+                
+                <div class="advanced-options">
+                    <details>
+                        <summary>Advanced Options</summary>
+                        <div class="options-grid">
+                            <div class="option-group">
+                                <label for="videoDuration">Duration</label>
+                                <select id="videoDuration">
+                                    <option value="4">4s</option>
+                                    <option value="6">6s</option>
+                                    <option value="8">8s</option>
+                                </select>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label for="videoResolution">Resolution</label>
+                                <select id="videoResolution">
+                                    <option value="720p">720p</option>
+                                    <option value="1080p">1080p</option>
+                                </select>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label for="generateAudioToggle">Generate Audio</label>
+                                <input type="checkbox" id="generateAudioToggle">
+                            </div>
+                        </div>
+                    </details>
+                </div>
+                
+                <button id="generateVideoButton" class="btn btn-primary">
+                    <span class="progress-indicator" id="videoProgressIndicator">
+                        <span class="step">Step 1/2</span>
+                        <span class="step">Step 2/2</span>
+                    </span>
+                    Generate Video
+                </button>
+            </div>
+            
+            <div class="results-section" id="videoResultsSection" style="display: none;">
+                <h3>Generated Video</h3>
+                <div class="result-content">
+                    <video id="generatedVideoResult" controls>
+                        <source src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="result-actions">
+                        <button id="downloadVideoResult" class="btn btn-secondary">Download</button>
+                        <button id="regenerateVideoBtn" class="btn btn-outline">Regenerate</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Settings</h3>
+                <button id="closeModalBtn" class="btn-icon close-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="apiKeyInput">API Key</label>
+                    <input type="password" id="apiKeyInput" placeholder="Enter your API key">
+                </div>
+                
+                <div class="form-group">
+                    <label for="apiSecretInput">API Secret</label>
+                    <input type="password" id="apiSecretInput" placeholder="Enter your API secret">
+                </div>
+                
+                <div class="modal-actions">
+                    <button id="saveApiKeysBtn" class="btn btn-primary">Save</button>
+                    <button id="testConnectionBtn" class="btn btn-secondary">Test Connection</button>
+                </div>
+                
+                <div class="modal-footer">
+                    <p>Get your API key at <a href="https://cloud.higgsfield.ai" target="_blank">cloud.higgsfield.ai</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <p>Powered by Higgsfield API</p>
+        <a href="#" target="_blank">Documentation</a>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

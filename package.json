@@ -1,0 +1,24 @@
+{
+  "name": "higgsfield-video-app",
+  "version": "1.0.0",
+  "description": "Web app for Higgsfield AI image and video generation",
+  "main": "index.html",
+  "scripts": {
+    "dev": "serve ./",
+    "start": "serve ./",
+    "build": "echo 'No build step required'"
+  },
+  "keywords": [
+    "higgsfield",
+    "ai",
+    "image-generation",
+    "video-generation",
+    "webapp"
+  ],
+  "author": "OpenClaw Agent",
+  "license": "MIT",
+  "dependencies": {
+    "serve": "^14.2.1"
+  },
+  "devDependencies": {}
+}
